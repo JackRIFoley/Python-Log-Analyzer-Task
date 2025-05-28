@@ -1,0 +1,20 @@
+2024-05-01 08:30:12 - INFO - Application started
+2024-05-01 08:32:15 - WARNING - Low disk space
+2024-05-01 08:35:01 - ERROR - Failed to load config
+2024-05-01 08:36:22 - INFO - Running background task
+2024-05-02 09:00:45 - ERROR - Timeout reached
+2024-05-02 09:15:11 - WARNING - Deprecated API used
+2024-05-03 10:05:30 - INFO - Scheduled job completed
+2024-05-03 10:06:45 - ERROR - Connection refused
+2024-05-04 11:20:08 - WARNING - High memory usage
+2024-05-05 12:10:19 - INFO - User logged in
+2024-05-06 13:15:30 - ERROR - Disk read failure
+2024-05-07 14:22:50 - INFO - Backup started
+2024-05-07 14:25:14 - INFO - Backup completed
+2024-05-08 15:30:40 - WARNING - CPU temperature high
+2024-05-09 16:45:55 - ERROR - Service not responding
+2024-05-10 17:01:33 - INFO - Configuration updated
+2024-05-11 18:12:47 - ERROR - Database connection lost
+2024-05-12 19:25:00 - WARNING - Disk space at 90%
+2024-05-13 20:35:18 - INFO - Log rotation completed
+2024-05-14 21:42:03 - ERROR - Out of memory
