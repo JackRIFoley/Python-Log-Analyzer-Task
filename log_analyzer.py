@@ -1,6 +1,8 @@
+import streamlit as st
 import argparse
 from datetime import datetime
 from collections import Counter
+import io
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Advanced Log File Analyzer")
@@ -18,38 +20,49 @@ def parse_log_line(line):
     except ValueError:
         return None, None, None  # Malformed line
 
-def analyze_log_file(file_path, start_date, end_date, levels):
+def analyze_log_file(file_lines, start_date, end_date, levels):
     log_counts = Counter()
     error_messages = []
 
-    with open(file_path, 'r') as f:
-        for line in f:
-            timestamp, level, message = parse_log_line(line)
-            if not timestamp or level not in levels:
-                continue
+    for line in file_lines:
+        timestamp, level, message = parse_log_line(line)
+        if not timestamp or level not in levels:
+            continue
 
-            if (start_date and timestamp < start_date) or (end_date and timestamp > end_date):
-                continue
+        if (start_date and timestamp < start_date) or (end_date and timestamp > end_date):
+            continue
 
-            log_counts[level] += 1
-            if level == "ERROR":
-                error_messages.append(message)
+        log_counts[level] += 1
+        if level == "ERROR":
+            error_messages.append(message)
 
     most_common_error = Counter(error_messages).most_common(1)[0][0] if error_messages else None
 
-    print("Log Summary:")
+    return log_counts, most_common_error
+
+
+# Streamlit UI
+st.title("Log File Analyzer")
+
+uploaded_file = st.file_uploader("Upload your `.log` file", type="log")
+
+with st.sidebar:
+    st.header("Filter Options")
+    start_date = st.date_input("Start Date", value=None)
+    end_date = st.date_input("End Date", value=None)
+    levels = st.multiselect("Log Levels", ["INFO", "WARNING", "ERROR"], default=["INFO", "WARNING", "ERROR"])
+
+if uploaded_file:
+    file_contents = uploaded_file.getvalue().decode("utf-8").splitlines()
+
+    start_dt = datetime.combine(start_date, datetime.min.time()) if start_date else None
+    end_dt = datetime.combine(end_date, datetime.max.time()) if end_date else None
+
+    log_counts, most_common_error = analyze_log_file(file_contents, start_dt, end_dt, levels)
+
+    st.subheader("Log Summary")
     for level in levels:
-        print(f"{level}: {log_counts[level]}")
+        st.write(f"{level}: {log_counts[level]}")
+
     if "ERROR" in levels and most_common_error:
-        print(f"Most common ERROR: \"{most_common_error}\"")
-
-def main():
-    args = parse_arguments()
-
-    start_date = datetime.strptime(args.start_date, "%Y-%m-%d") if args.start_date else None
-    end_date = datetime.strptime(args.end_date, "%Y-%m-%d") if args.end_date else None
-
-    analyze_log_file(args.file, start_date, end_date, args.levels)
-
-if __name__ == "__main__":
-    main()
+        st.write(f"Most common ERROR: \"{most_common_error}\"")
